@@ -52,7 +52,6 @@ Leading-edge bumps (sinusoidal) on each long edge.
 | Crest / trough radius | R0.52 |
 | Zone start | x = 45.5 mm |
 
-![Tubercle blade dimensioned plan](blade_plan_dimensioned__1_.png)
 
 ### 3. Hybrid blade
 Tubercle leading edge **plus** a serrated (saw-tooth) trailing edge, so each blade carries both zones.
@@ -66,7 +65,6 @@ Tubercle leading edge **plus** a serrated (saw-tooth) trailing edge, so each bla
 
 The tubercle zone on the hybrid blade is the same as above (21.0 mm = 6 × 3.5 mm).
 
-![Hybrid blade dimensioned planform](hybrid_blade_planform_dimensioned__1_.png)
 
 ---
 
