@@ -1,4 +1,4 @@
-# Tubercle-Edge Blades for a Quieter, Smoother BLDC Mixer Grinder
+# Tubercle-Edge Blades for a Quieter, Smoother Mixer Grinder
 
 **atomQUEST 2026 | Round 2 | Track 3: Mixer Grinder (Atomberg problem statement)**
 **Team Wayne Enterprises**, Jaypee Institute of Information Technology, Noida
@@ -70,7 +70,7 @@ The tubercle zone on the hybrid blade is the same as above (21.0 mm = 6 × 3.5 m
 
 ## Test setup
 
-- BLDC mixer-grinder base
+- Universal mixer-grinder base
 - Lab DC supply
 - Digital oscilloscope (motor signal on channel 1)
 
