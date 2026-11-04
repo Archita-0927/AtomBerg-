@@ -160,7 +160,7 @@ State machine: `IDLE → RUNNING → DONE`, with `FAULT_LID` and `FAULT_TEMP` fa
 **Team Wayne Enterprises**, Jaypee Institute of Information Technology, Noida
 
 - Archita Gupta
-- Bhavan Kumar Bharadwaj
+- Bhavan Kumar Bhardwaj
 - Shubhi Jain
 
 ## License
