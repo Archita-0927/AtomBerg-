@@ -1,6 +1,6 @@
 # Tubercle-Edge Blades with Current-Signature Load Matching for a Quieter, Cooler Mixer Grinder
 
-**atomQUEST 2026 | Round 3 | Track 3: Mixer Grinder (Atomberg Problem Statement)**
+**atomQUEST 2026 | Round 3 | Track 3: Mixer Grinder **
 
 **Team Wayne Enterprises**  
 Jaypee Institute of Information Technology, Noida
@@ -179,7 +179,7 @@ The simulation predicted approximately:
 
 These predictions were obtained for the tubercle blade relative to the standard blade.
 
-The experimental results showed a larger reduction in electrical input power for the tubercle blade. However, CFD predictions and DC bench measurements represent different quantities and should be interpreted separately.
+The experimental results showed a larger reduction in electrical input power for the tubercle blade. 
 
 ---
 
@@ -280,13 +280,6 @@ These values represent electrical input power supplied to the DC motor during be
 
 ---
 
-## Project Repository
-
-**GitHub:** https://github.com/Archita-0927/AtomBerg-
-
-The repository contains the project code, CAD designs and simulation resources.
-
----
 
 ## Team
 
