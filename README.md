@@ -1,170 +1,308 @@
-# Tubercle-Edge Blades for a Quieter, Smoother Mixer Grinder
+# Tubercle-Edge Blades with Current-Signature Load Matching for a Quieter, Cooler Mixer Grinder
 
-**atomQUEST 2026 | Round 2 | Track 3: Mixer Grinder (Atomberg problem statement)**
-**Team Wayne Enterprises**, Jaypee Institute of Information Technology, Noida
+**atomQUEST 2026 | Round 3 | Track 3: Mixer Grinder (Atomberg Problem Statement)**
 
-Straight-edged mixer-grinder blades shed turbulent, unstable flow. The motor load keeps fluctuating, which shows up as current spikes and ripple, and the result is more noise, more heat and wasted energy.
-
-Our idea is to borrow the whale-flipper (tubercle) leading edge: the bumps shed vortices, giving steadier flow and lower drag on the BLDC motor. We built and tested two new blades against the existing straight-edge blade, and simulated a smart thermal-control routine on an Arduino.
+**Team Wayne Enterprises**  
+Jaypee Institute of Information Technology, Noida
 
 ---
 
-## Contents
+## Overview
 
-| File | What it is |
-|---|---|
-| `blade_plan.dwg` | CAD plan of the **tubercle blade** |
-| `blade_plan_dimensioned__1_.png` | Dimensioned drawing of the tubercle blade |
-| `scale_hybrid_blade_planform__1_.dwg` | CAD plan of the **hybrid blade** (serrated + tubercle) |
-| `hybrid_blade_planform_dimensioned__1_.png` | Dimensioned drawing of the hybrid blade |
-| `Sketch.ino` | Arduino UNO smart thermal-control firmware (simulated in Wokwi) |
-| `diagram.json` | Wokwi circuit diagram for the sketch |
+Conventional straight-edged mixer-grinder blades generate turbulent flow, contributing to fluctuating motor loads, noise, heat build-up and inefficient energy consumption.
 
-> Tip: rename files with `(1)`-style suffixes (e.g. `blade_plan_dimensioned.png`) and update the links below.
+Our project explores a biomimetic blade design inspired by the tubercles found on humpback whale flippers. By modifying the blade edges, we aim to improve fluid flow and reduce the load experienced by the motor.
 
----
+We developed two blade variants — **Tubercle and Hybrid (Tubercle + Serrated)** — and compared them against a standard mixer-grinder blade.
 
-## The three blades
+Alongside the blade modifications, we developed an intelligent control system incorporating food-type selection, motor-current sensing, temperature monitoring and an overheat alert mechanism.
 
-All blades are point-symmetric (the bottom edge is the top edge rotated 180° about the hub centre) and share the same basic planform.
-
-| Parameter | Value |
-|---|---|
-| Overall length | 70.0 mm |
-| Centre (flat zone) width | 14.0 mm |
-| End width | 10.5 mm |
-| Taper | ≈ 4.0° (10.5 → 14.0 mm over about 24.5 to 24.9 mm) |
-| Hub hole | Ø7.0 mm (R3.5) |
-| Blade thickness | 1.5 mm (from the atomQUEST Round 2 brief; a 2D plan does not store thickness) |
-| Max width incl. tubercle crests | 15.88 mm |
-
-### 1. Normal blade (baseline)
-The existing straight-edge blade, used as the baseline.
-
-### 2. Tubercle blade
-Leading-edge bumps (sinusoidal) on each long edge.
-
-| Tubercle parameter | Value |
-|---|---|
-| Tubercle zone | 21.0 mm = 6 × 3.5 mm pitch |
-| Pitch (λ) | 3.5 mm |
-| Crest to trough | 1.3 mm |
-| Crest / trough radius | R0.52 |
-| Zone start | x = 45.5 mm |
-
-
-### 3. Hybrid blade
-Tubercle leading edge **plus** a serrated (saw-tooth) trailing edge, so each blade carries both zones.
-
-| Serrated parameter | Value |
-|---|---|
-| Serrated zone | 19.7 mm, pitch 2.62 mm |
-| Crest to root | 0.87 mm |
-| Tip angle | ≈ 113° (straight flanks) |
-| Teeth | 7 full teeth + 1 truncated tooth at the taper end (first crest x = 4.8, last crest x = 23.2) |
-
-The tubercle zone on the hybrid blade is the same as above (21.0 mm = 6 × 3.5 mm).
-
+The project combines mechanical design, embedded electronics and computational fluid dynamics (CFD) to explore a more efficient and safer mixer-grinder system.
 
 ---
 
-## Test setup
+## Key Features
 
-- Universal mixer-grinder base
-- Lab DC supply
-- Digital oscilloscope (motor signal on channel 1)
-
-We measured the **peak-to-peak (Pk-Pk)** of the motor signal. A lower Pk-Pk means a smoother load on the motor. Each blade was tested with an **empty jar** and with **water** in the jar.
-
-## Results
-
-| Blade | Empty jar (Pk-Pk) | Water (Pk-Pk) |
-|---|---|---|
-| Normal (baseline) | 4.78 V (1 V/div, 5 ms/div) | 14.2 V (2 V/div, 2 ms/div) |
-| Tubercle | 3.1 V (2 V/div, 2 ms/div) | 2.23 V (500 mV/div, 1 ms/div); 3.6 to 4.5 V live at 5 ms/div |
-| Hybrid | 1.85 V (500 mV/div, 10 ms/div) | 3.14 V (1 V/div, 1 ms/div); 6.9 V at 5 ms/div |
-
-Key takeaways:
-
-- Under water load, both new blades run far smoother than the normal blade (at least 68% lower for tubercle and 51% lower for hybrid, using the longer 5 ms/div window).
-- Empty jar: the hybrid blade is the smoothest (at least 61% lower than normal).
-- Percentages use the longer time base, which can only raise Pk-Pk, so they are conservative.
-- The readings were taken at different oscilloscope time bases, so the next step is to re-test all blades at one fixed time base.
+- **Biomimetic Blade Design:** Two modified blade geometries inspired by humpback whale flipper tubercles.
+- **Comparative Testing:** Standard, tubercle and hybrid blades tested using the same jar and motor.
+- **Smart Food-Type Selection:** Predefined grinding profiles selected through a rotary encoder and displayed on an OLED.
+- **Motor-Current Monitoring:** Current sensing to identify motor loading conditions.
+- **Temperature Monitoring:** A temperature sensor positioned near the motor.
+- **Overheat Alert:** Buzzer, LED and OLED warning when the temperature crosses the defined threshold.
+- **Adaptive Cooling:** Pulse OFF duration increases with rising temperature.
+- **Safety Mechanisms:** Relay-based motor cut-off, overload protection logic and sensor-fault lock-out implemented in firmware.
 
 ---
 
-## Smart thermal control (simulation)
+## The Three Blade Designs
 
-`Sketch.ino` and `diagram.json` simulate a smart-grinder controller on an **Arduino UNO** in [Wokwi](https://wokwi.com). It is a simulation only; we plan to bring this logic onto the hardware prototype.
+<details>
+<summary><strong>1. Standard Blade (Baseline)</strong></summary>
 
-### What it does
+The conventional straight-edged mixer-grinder blade serves as the control for comparative testing.
 
-- **Preset selection** with a rotary encoder, shown on an SSD1306 OLED.
-- **Soft start**: the motor speed ramps up over the first 2 seconds.
-- **Temperature-based cool-rest**: above 50 °C the controller adds rest time between grinding bursts, and the rest gets longer as the motor gets hotter.
-- **Lid interlock**: opening the lid stops the motor immediately.
-- **Overheat cut-off**: the motor is stopped at 70 °C, and it will not restart until it has cooled by at least 5 °C.
+</details>
 
-| Preset | Speed | Run time | Mode |
-|---|---|---|---|
-| Orange | 60% | 60 s | Continuous |
-| Spices | 90% | 30 s | Pulsing, 5 s ON / 2 s OFF base |
-| Coconut | 75% | 60 s | Continuous |
-| Rice | 85% | 45 s | Pulsing, 8 s ON / 3 s OFF base |
+<details>
+<summary><strong>2. Tubercle Blade</strong></summary>
 
-State machine: `IDLE → RUNNING → DONE`, with `FAULT_LID` and `FAULT_TEMP` fault states.
+Inspired by the leading-edge tubercles of humpback whale flippers, this design incorporates sinusoidal bumps along the blade edge.
 
-### Wiring (as in `diagram.json`)
+The design aims to influence flow behaviour, reduce drag and produce a more stable motor load.
 
-| Part | Arduino pin |
+</details>
+
+<details>
+<summary><strong>3. Hybrid Blade</strong></summary>
+
+The hybrid blade combines tubercle-inspired bumps with serrations along the blade edge.
+
+It explores the combined effect of two different edge modifications on flow behaviour and motor loading.
+
+</details>
+
+All three blade designs were tested using the same jar and motor assembly.
+
+---
+
+## Prototype and System Architecture
+
+The physical prototype integrates the grinder assembly with an Arduino-based monitoring and control system.
+
+### Hardware Components
+
+| Component | Purpose |
 |---|---|
-| Motor output (PWM, shown as an LED via a resistor) | D5 |
-| Rotary encoder CLK / DT / SW | D6 / D7 / D3 |
-| Lid switch (LOW = lid closed) | D4 |
-| Temperature input (potentiometer stands in for a sensor, mapped 20 to 80 °C) | A0 |
-| OLED SSD1306 SDA / SCL | A4 / A5 |
+| Arduino UNO | Main controller |
+| 0.96-inch SSD1306 OLED | Mode selection and system status |
+| Rotary Encoder (HW-040) | Food preset selection and start/stop |
+| ACS712 Current Sensor (20A) | Motor-current sensing |
+| LM35DZ Temperature Sensor | Motor temperature monitoring |
+| Relay Module | Motor switching and cut-off |
+| Active Buzzer | Overheat alert |
+| LED | Visual warning |
+| Fuse | Hardware protection |
+| Grinder Motor and Jar | Grinding assembly |
 
-### Run it
+### Working
 
-1. Open [wokwi.com](https://wokwi.com) and create a new Arduino UNO project.
-2. Replace the default `sketch.ino` with `Sketch.ino` and `diagram.json` with the file from this repo.
-3. Add the libraries **Adafruit GFX Library** and **Adafruit SSD1306** (Wokwi Library Manager, or a `libraries.txt` file).
-4. Press **Start Simulation**. Turn the encoder to pick a preset, click to start, and move the potentiometer above 50 °C to see the cool-rest, or to 70 °C to trigger OVERHEAT.
+1. The user selects a predefined food profile through the rotary encoder.
+2. The selected mode and system information are displayed on the OLED.
+3. The controller monitors motor current and temperature.
+4. The firmware uses the current measurements for load classification and adaptive control.
+5. As temperature rises, the adaptive pulse-OFF logic increases cooling intervals.
+6. If the overheat threshold is crossed, the system triggers the buzzer, LED and OLED warning and stops the motor through the relay.
+
+The Arduino also streams live operating information to the serial monitor.
+
+### Available Presets
+
+- Orange
+- Coconut
+- Rice
+- Spices
+
+Preset timings and current thresholds are initial engineering values and require further calibration using actual food loads.
 
 ---
 
-## Status
+## Experimental Setup
 
-**Done**
-- Tubercle and hybrid blades built and fitted to the jar
-- Test rig: BLDC base, lab DC supply, oscilloscope
-- Readings taken for empty jar and water vs the normal blade
-- Smart thermal-control logic simulated (Arduino)
+The blades were tested using:
 
-**Pending**
-- Re-test all blades at one fixed scope time base
-- Noise (dB) and heat measurements
-- CFD drag-torque (Cd) comparison
-- Move the controller from simulation to the hardware prototype
+- Universal mixer-grinder motor and jar
+- Regulated DC bench power supply (Aplab LQ 6324T)
+- Keysight EDUX1052A digital oscilloscope
+- Arduino-based monitoring setup
 
-**Safety / fail-safe**
-- Tests run on a current-monitored bench supply
-- Rounded tubercle edges, no sharp bump tips
-- Simulated: overheat alert and cool-down rest
-- Planned: jar-lock detection and overload cut-off
+**Testing conditions:** Approximately 30–31.5 V DC bench supply.
+
+Each blade was tested with two food materials:
+
+- Rice
+- Daal
+
+The supply voltage and current readings were recorded for each run. Electrical input power was calculated using:
+
+\[
+P=V\times I
+\]
+
+Oscilloscope peak-to-peak (Pk-Pk) readings were also recorded to compare the observed motor signal.
+
+---
+
+## Experimental Results
+
+### 1. Supply Current and Input Power
+
+| Blade | Food | Voltage (V) | Current (A) | Input Power (W) |
+|---|---|---:|---:|---:|
+| Standard | Rice | 30.9 | 0.72 | 22.2 |
+| Standard | Daal | 30.9 | 0.76 | 23.5 |
+| Tubercle | Rice | 30.3 | 0.54 | 16.4 |
+| Tubercle | Daal | 30.3 | 0.52 | 15.8 |
+| Hybrid | Rice | 31.5 | 0.67 | 21.1 |
+| Hybrid | Daal | 31.5 | 0.69 | 21.7 |
+
+### 2. Reduction Compared to Standard Blade
+
+| Blade | Food | Current Reduction | Input Power Reduction |
+|---|---|---:|---:|
+| Tubercle | Rice | 25.0% | 26.5% |
+| Tubercle | Daal | 31.6% | 32.9% |
+| Hybrid | Rice | 6.9% | 5.1% |
+| Hybrid | Daal | 9.2% | 7.4% |
+
+**Key Observation:** The tubercle blade demonstrated the highest reduction in supply current and electrical input power across both food materials.
+
+### 3. Oscilloscope Results
+
+| Blade | Rice Pk-Pk | Daal Pk-Pk |
+|---|---:|---:|
+| Standard | >9.68 V | 11.0 V |
+| Tubercle | 330 mV | 378 mV |
+| Hybrid | 273 mV | 13.2 V |
+
+*Note: Oscilloscope vertical scales and time bases differed between captures. These readings are indicative and should not be treated as a directly controlled waveform comparison.*
+
+---
+
+## CFD Simulation
+
+COMSOL Computational Fluid Dynamics (CFD) simulations were conducted at rotational speeds ranging from **100–500 RPM**.
+
+The simulation predicted approximately:
+
+- 13% reduction in drag torque.
+- 13% reduction in hydrodynamic power.
+
+These predictions were obtained for the tubercle blade relative to the standard blade.
+
+The experimental results showed a larger reduction in electrical input power for the tubercle blade. However, CFD predictions and DC bench measurements represent different quantities and should be interpreted separately.
+
+---
+
+## Smart Safety and Thermal-Control System
+
+The prototype incorporates a temperature-based safety mechanism to prevent overheating.
+
+### Protection Mechanisms
+
+| Protection | Implemented Logic |
+|---|---|
+| Thermal Trip | Motor cut-off at 70°C |
+| Thermal Reset | Automatic reset below 60°C |
+| Overload Protection | RMS current above 3.4 A for 2 seconds triggers a trip |
+| Sensor Fault | Lock-out if temperature reading leaves the 2–110°C range |
+| Adaptive Cooling | Longer OFF intervals as temperature rises |
+| User Abort | Manual stop through encoder switch |
+
+### Overheat Demonstration
+
+During the live demonstration:
+
+- The OLED displayed **OVERHEAT!**
+- The motor-temperature reading was displayed.
+- The buzzer activated.
+- The status LED illuminated.
+- The display indicated the cooldown condition.
+
+The overheat alert was demonstrated in the prototype video.
+
+**Important:** The live AC-side overload protection, sensor-fault lock-out and 70°C cut-off under a running grinder load have not yet been independently demonstrated. AC testing remains future work.
+
+---
+
+## Cost Analysis
+
+### Prototype Bill of Materials
+
+| Component | Cost (₹) |
+|---|---:|
+| Stainless-steel blades (8 pieces) | 1,500 |
+| Arduino UNO | 339 |
+| SSD1306 OLED | 251 |
+| HW-040 Rotary Encoder | 258 |
+| ACS712 Current Sensor | 184 |
+| LM35DZ Temperature Sensor | 170 |
+| 5V Relay Module | 149 |
+| LED and Active Buzzer | 79 |
+| Passives, Breadboard and Jumper Wires | 375 |
+| **Total Prototype Cost** | **₹3,305** |
+
+### Estimated Manufacturing Cost at Scale
+
+At a production scale of approximately 1,000+ units, the estimated BOM cost could reduce to:
+
+**₹900–₹1,200 per unit**
+
+This estimate assumes the replacement of retail modules with bare ICs, a custom PCB and bulk-manufactured blades.
+
+---
+
+## Power Consumption
+
+The measured DC bench-supply input power was:
+
+| Blade | Rice | Daal |
+|---|---:|---:|
+| Standard | 22.2 W | 23.5 W |
+| Tubercle | 16.4 W | 15.8 W |
+| Hybrid | 21.1 W | 21.7 W |
+
+These values represent electrical input power supplied to the DC motor during bench testing, not the mains power consumption of a commercial mixer grinder.
+
+---
+
+## Limitations and Future Scope
+
+### Current Limitations
+
+- Only one observation was recorded per blade/food combination.
+- Supply voltage varied between blade tests.
+- Oscilloscope scales and time bases were not identical.
+- AC mains-powered grinder testing has not been completed.
+- Noise levels, temperature rise, grind time and grind quality have not been quantitatively measured.
+- Overload trip and sensor-fault lock-out require further validation.
+- CFD results are simulation-based predictions.
+
+### Future Work
+
+1. Conduct supervised AC-side testing of the complete grinder system.
+2. Validate relay cut-off, overload protection and thermal trip under actual operating conditions.
+3. Perform at least three test runs per blade and food combination.
+4. Record RMS current, peak current, temperature rise and electrical power at controlled supply conditions.
+5. Measure sound levels (dB(A)) at a fixed distance.
+6. Compare grinding time and final grind quality.
+7. Calibrate preset timings and current thresholds using actual food loads.
+8. Further optimise blade geometry using CFD and experimental validation.
+
+---
+
+## Project Repository
+
+**GitHub:** https://github.com/Archita-0927/AtomBerg-
+
+The repository contains the project code, CAD designs and simulation resources.
 
 ---
 
 ## Team
 
-**Team Wayne Enterprises**, Jaypee Institute of Information Technology, Noida
+**Team Wayne Enterprises**  
+Jaypee Institute of Information Technology, Noida
 
-- Archita Gupta
-- Bhavan Kumar Bhardwaj
-- Shubhi Jain
+- Archita Gupta — ECE, 3rd Year
+- Bhavan Kumar Bhardwaj — ECE, 3rd Year
+- Shubhi Jain — ECE, 3rd Year
+
+**atomQUEST 2026 | Track 3: Mixer Grinder**
+
+---
 
 ## License
 
-**Copyright © 2026 Team Wayne Enterprises, Jaypee Institute of Information Technology, Noida. All rights reserved.**
+Copyright © 2026 Team Wayne Enterprises, Jaypee Institute of Information Technology, Noida. All rights reserved.
 
-This repository is published for viewing and evaluation only. No part of it, including the blade designs, drawings, CAD files, images, results and source code, may be copied, modified, distributed or used commercially without prior written permission from Team Wayne Enterprises.
+This repository is published for viewing and evaluation only. No part of this project, including its blade designs, CAD files, drawings, source code, images, experimental results and documentation, may be copied, modified, distributed or used commercially without prior written permission from Team Wayne Enterprises.
