@@ -33,7 +33,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // ==================================================================================
 // ACS712 Sensitivity:
 // 0.185 for 5A (05B chip) -> ~3.5A RMS / 5A peak max
-// 0.100 for 20A (20A chip) -> ~14A RMS max (Recommended for 750W grinders)
+// 0.100 for 20A (20A chip) -> ~14A RMS max 
 // 0.066 for 30A (30A chip)
 const float ACS_SENSITIVITY = 0.185;
 // Relay Module Trigger Logic:
@@ -41,8 +41,6 @@ const float ACS_SENSITIVITY = 0.185;
 // 1 = Active-LOW (Relay turns ON when D7 is LOW)
 const uint8_t RELAY_ACTIVE_LOW = 0;
 // Rotary Encoder Hardware Configuration:
-// Change ENC_STEPS_PER_DETENT to 2 or 4 depending on module mechanical detents
-// Set ENC_REVERSE to 1 if clockwise rotation decreases preset
 const int8_t ENC_STEPS_PER_DETENT = 2;
 const uint8_t ENC_REVERSE = 0;
 // Thermal Safety & Dynamic Cooling Parameters
@@ -361,7 +359,7 @@ display.print(F("s)"));
 display.display();
 }
 // ==================================================================================
-// 9. SERIAL TELEMETRY LOGGING (CSV Format at 9600 Baud)
+// 9. SERIAL TELEMETRY LOGGING 
 // ==================================================================================
 void logSerialTelemetry() {
 // CSV Format: Timestamp_ms, State, Preset, Temp_C, Irms_A, Load_Class, Relay, Power_VA
@@ -400,7 +398,6 @@ Serial.println(F("\n=================================================="));
 Serial.println(F("atomQUEST 2026 | Track 3 | Team Wayne Enterprises"));
 Serial.println(F("Mixer Grinder Controller - Initializing..."));
 Serial.println(F("=================================================="));
-// Configure Digital I/O
 pinMode(PIN_RELAY, OUTPUT);
 safeShutdown(); // Ensure relay starts in strictly safe DE-ENERGIZED state
 pinMode(PIN_LED_ALERT, OUTPUT);
@@ -410,7 +407,6 @@ digitalWrite(PIN_BUZZER, LOW);
 pinMode(PIN_ENC_CLK, INPUT_PULLUP);
 pinMode(PIN_ENC_DT, INPUT_PULLUP);
 pinMode(PIN_ENC_SW, INPUT_PULLUP);
-// Attach Hardware Interrupts for Rotary Encoder
 attachInterrupt(digitalPinToInterrupt(PIN_ENC_CLK), isrEncoder, CHANGE);
 attachInterrupt(digitalPinToInterrupt(PIN_ENC_DT), isrEncoder, CHANGE);
 // Initialize OLED Display
@@ -456,7 +452,7 @@ unsigned long now = millis();
 currentTempC = readLM35Temperature();
 currentIrms = readACSCurrentRMS();
 currentLoadTag = evaluateLoadCategory(currentIrms, selectedPreset);
-// Sensor Fault Guard: LM35 range check (Normal operating window: 2 C to 110 C)
+// Sensor Fault Guard: LM35 range check
 if (currentTempC < 2.0 || currentTempC > 110.0) {
 if (currentState != STATE_SENSOR_ERR) {
 safeShutdown();
@@ -474,7 +470,7 @@ stateEnterTime_ms = now;
 Serial.println(F("[CRITICAL] THERMAL OVERHEAT TRIP! Relays cut off."));
 }
 }
-// Electrical Overload Guard (Sustained current above I_TRIP_A for > 2.0s)
+// Electrical Overload Guard 
 if (currentIrms >= I_TRIP_A && (currentState == STATE_RUN_ON || currentState == STATE_RUN_OFF)) {
 if (overloadStartTime_ms == 0) {
 overloadStartTime_ms = now;
@@ -544,7 +540,6 @@ Serial.println(F("[STATE] Cooled below reset threshold (60 C). System READY."));
 // ----------------------------------------------------
 switch (currentState) {
 case STATE_CALIBRATING:
-// Handled in setup()
 break;
 case STATE_READY:
 safeShutdown();
@@ -557,7 +552,7 @@ setRelay(true);
 digitalWrite(PIN_LED_ALERT, HIGH);
 digitalWrite(PIN_BUZZER, LOW);
 if ((now - stateEnterTime_ms) >= pulseDuration_ms) {
-// Transition to OFF cooling phase with thermal dynamic expansion
+// Transition to OFF cooling phase
 setRelay(false);
 digitalWrite(PIN_LED_ALERT, LOW);
 currentState = STATE_RUN_OFF;
