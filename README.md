@@ -125,7 +125,7 @@ Each blade was tested with two food materials:
 The supply voltage and current readings were recorded for each run. Electrical input power was calculated using:
 
 \[
-P=V\times I
+P=V times I
 \]
 
 Oscilloscope peak-to-peak (Pk-Pk) readings were also recorded to compare the observed motor signal.
